@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <!-- 必须的 meta 标签 -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap 的 CSS 文件 -->
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <script src="./js/jquery-3.6.0.min.js"></script>
+    <script src="./js/bootstrap.bundle.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <title>登录</title>
+</head>
+
+<body style=" background: url(http://global.bing.com/az/hprichbg/rb/RavenWolf_EN-US4423795745_1920x1080.jpg) no-repeat center center fixed; background-size: 100%;">
+
+
+<div class="modal-dialog" style="margin-top: 10%;">
+    <div id="login" class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title text-center" id="myModalLabel">登录</h4>
+        </div>
+        <div class="modal-body" id="model-body">
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                    </div>
+                    <input id="lname" type="text" class="form-control " placeholder=" 用户名/学号" autocomplete="off">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                    </div>
+                    <input id="lpwd" type="password" class="form-control" placeholder=" 密码" autocomplete="off">
+                </div>
+            </div>
+            <div class="form-group ">
+                <!--                <div class="custom-control custom-checkbox d-inline">-->
+                <!--                    <input type="checkbox" class="custom-control-input" id="customControlAutosizing">-->
+                <!--                    <label class="custom-control-label" for="customControlAutosizing">7天免登录</label>-->
+                <!--                </div>-->
+                <div class="d-inline ">
+                    <a style="color: #005cbf" onclick="toRegister()">注册账号</a>
+                </div>
+                <div class="d-inline float-right">
+                    <a style="color: #005cbf;font-size: 14px" onclick="alert('请联系管理员！')">忘记密码？</a>
+                </div>
+            </div>
+            <div class="form-group">
+                <button onclick="login()" type="button" class="btn btn-primary form-control">登录</button>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div class="form-group">
+                <span class=""></span>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="register" class="modal-content" style="display: none">
+        <div class="modal-header">
+            <h4 class="modal-title text-center" id="myModalLabel2">注册</h4>
+        </div>
+        <div class="modal-body" id="model-body2">
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                    </div>
+                    <input id="rname" type="text" class="form-control " placeholder=" 姓名" autocomplete="off">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
+                    </div>
+                    <input id="rno" type="text" class="form-control " placeholder=" 学号" autocomplete="off">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                    </div>
+                    <input id="rpwd" type="password" class="form-control" placeholder=" 密码" autocomplete="off">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                    </div>
+                    <input id="rpwd2" type="password" class="form-control" placeholder=" 确认密码" autocomplete="off">
+                </div>
+            </div>
+            <div class="form-group ">
+                <div class="d-inline ">
+                    <span> &nbsp</span>
+                </div>
+                <div class="d-inline float-right">
+                    <a style="color: #005cbf;font-size: 14px" onclick="toLogin()">已有账号去登录</a>
+                </div>
+            </div>
+            <div class="form-group">
+                <button onclick="register()" type="button" class="btn btn-success form-control">注册</button>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div class="form-group">
+                <span class=""></span>
+            </div>
+
+        </div>
+    </div>
+</div><!-- /.modal -->
+<script>
+    function toRegister() {
+        $('#login').css('display', 'none');
+        $('#register').css('display', 'block');
+    }
+
+    function toLogin() {
+        $('#login').css('display', 'block');
+        $('#register').css('display', 'none');
+    }
+
+    function login() {
+
+        let data = {}
+        data.name = $('#lname').val()
+        data.pwd = $('#lpwd').val()
+
+        $.ajax({
+            url: '/user/login',
+            data: JSON.stringify(data),
+            contentType: "application/json",
+            type: "POST",
+            success: function (result) {
+                let code = result.code;
+                if (code === 200) {
+                    sessionStorage.setItem("user", JSON.stringify(result.data))
+                    location.href = "main.html";
+                    return;
+                }
+                alert(result.msg)
+            },
+            error: function (result) {
+                alert("服务器忙，请稍后")
+            }
+        });
+    }
+
+    function register(){
+        let data = {}
+        data.name = $('#rname').val()
+        data.pwd = $('#rpwd').val()
+        data.no = $('#rno').val()
+
+        if (data.pwd !== $('#rpwd2').val()){
+            alert("两次密码不一致")
+            return;
+        }
+        $.ajax({
+            url: '/user/register',
+            data: JSON.stringify(data),
+            contentType: "application/json",
+            type: "POST",
+            success: function (result) {
+                let code = result.code;
+                if (code === 200) {
+                    sessionStorage.setItem("user", JSON.stringify(result.data))
+                    location.href = "main.html";
+                    return;
+                }
+                alert(result.msg)
+            },
+            error: function (result) {
+                alert("服务器忙，请稍后")
+            }
+        });
+
+    }
+</script>
+</body>
+</html>
