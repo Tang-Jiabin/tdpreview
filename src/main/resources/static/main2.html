@@ -17,9 +17,8 @@
             margin: 0;
         }
 
-        div {
-
-
+        .chat-body::-webkit-scrollbar {
+            display: none;
         }
 
         body {
@@ -33,90 +32,468 @@
     <div class="row" style="height: 100%">
         <div id="scene" class="col-9"
              style="height: 100%;background-color: #0091d2;z-index: 5;position: relative;padding: 0;margin: 0;">
-<!--            <div class="float-right"-->
-<!--                 style="z-index: 10;width: 10%;height: 15%;background-color: #6e707a;padding: 0;margin: 0;">-->
-<!--                <ul>-->
-<!--                    <li>x轴</li>-->
-<!--                    <li>y轴</li>-->
-<!--                    <li>z轴</li>-->
-<!--                </ul>-->
-<!--            </div>-->
-            <div style="position: absolute;bottom:0;height: 10%;width: 100%;z-index: 10;background-color: #6e707a;padding: 0;margin: 0;"></div>
+
+            <!--            <div class="float-right"-->
+            <!--                 style="z-index: 10;width: 10%;height: 15%;background-color: #6e707a;padding: 0;margin: 0;">-->
+            <!--                <ul>-->
+            <!--                    <li>x轴</li>-->
+            <!--                    <li>y轴</li>-->
+            <!--                    <li>z轴</li>-->
+            <!--                </ul>-->
+            <!--            </div>-->
+            <div style="position: absolute;bottom:0;height: 10%;width: 100%;z-index: 10;background-color: #6e707a;padding: 0;margin: 0;">
+                <div class="row">
+                    <div class="col-4">
+                        <!--选择三维物体区域-->
+                        <button class="btn btn-success" onclick="addModelOnClick(0)">立方体</button>
+                        <button class="btn btn-success" onclick="addModelOnClick(1)">圆</button>
+                        <button class="btn btn-success" onclick="addModelOnClick(2)">圆柱体</button>
+                    </div>
+                    <div class="col-4">
+                        <!--操作区域-->
+                        <button class="btn btn-success" onclick="transformOnClick(1)">平移</button>
+                        <button class="btn btn-success" onclick="transformOnClick(2)">旋转</button>
+                        <button class="btn btn-success" onclick="transformOnClick(3)">缩放</button>
+                    </div>
+                    <div class="col-4">
+                        <ul class="list-group">
+                            <li class="list-group-item"><label id="px"></label></li>
+                            <li class="list-group-item">A third item</li>
+                            <li class="list-group-item">A fourth item</li>
+                        </ul>
+                    </div>
+
+                </div>
+
+            </div>
         </div>
-        <div class="col-3" style="height: 100%;background-color: #b3d7ff;z-index: 5"></div>
+        <div class="col-3" style="height: 100%;background-color: #b3d7ff;z-index: 5">
+            <div class="layout">
+                <div class="content ">
+                    <div class="chat">
+                        <div class="chat-body" style="outline: none;overflow-y:auto">
+                            <div id="messages" class="messages">
+                                <div class="message-item ">
+                                    <div class="message-header">name</div>
+                                    <div class="message-content">Lorem ipsum dolor sit amet.</div>
+                                    <div class="message-action">PM 14:25</div>
+                                </div>
+                            </div>
+                            <span id="msg_end" style="overflow:hidden"></span>
+                        </div>
+                        <div class="chat-footer">
+                            <div class="input-group">
+                                <textarea id="pltext" type="text" class="form-control" placeholder=""
+                                          aria-label=""
+                                          aria-describedby="button-addon4"></textarea>
+                                <div class="input-group-append" id="button-addon4">
+                                    <button class="btn btn-outline-secondary" type="button" onclick="sendMsg()">评论
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
 <script src="./js/jquery-3.6.0.min.js"></script>
 <script src="./js/bootstrap.bundle.min.js"></script>
 <script src="./js/bootstrap.min.js"></script>
 <script src="./js/three.js"></script>
-<!--<script type="module" src="./js/OrbitControls.js"></script>-->
-<script type="module">
-    /*
-   创建场景
-   */
-    import {OrbitControls} from "./js/OrbitControls.js";
+<script src="./js/DragControls.js"></script>
+<script src="./js/stats.min.js"></script>
+<script src="./js/Detector.js"></script>
+<script src="./js/TrackballControls.js"></script>
+<script src="./js/dat.gui.min.js"></script>
+<script src="./js/TransformControls.js"></script>
+<script>
+    let sceneDiv = $('#scene')
+    let user =  JSON.parse(sessionStorage.getItem("user"))
+    let model = {};
+    let models = []
 
-    const scene = new THREE.Scene();
-    //var geometry = new THREE.SphereGeometry(60,40,40);//创建一个球体几何对象
-    //var geometry = new THREE.BoxGeometry( 100, 100, 10 );//创建一个长方体几何对象
-    // var geometry = new THREE.CylinderGeometry(50, 50, 50, 100);//创建一个圆柱体几何对象:第一个参数是顶部直径、第二个参数是底部直径、第三个是圆柱高度、第四个是圆周分段数（越大越圆）
-    //var geometry = new THREE.OctahedronGeometry( 50 );//正八面体
-    // var geometry2 = new THREE.DodecahedronGeometry( 50 );//正12面体
-    //var geometry = new THREE.IcosahedronGeometry( 50 );//正20面体
+    const stats = initStats();
+    let scene, camera, renderer, controls, light, selectObject, transformControls, dragControls;
 
-    var material = new THREE.MeshPhongMaterial({
-        color: 0x0000ff
-    });//创建材质对象
+    // 场景
+    function initScene() {
+        scene = new THREE.Scene();
+    }
 
-    // var mesh = new THREE.Mesh(geometry, material);//网格模型对象
-    // var mesh2 = new THREE.Mesh(geometry2, material);//网格模型对象
+    // 相机
+    function initCamera() {
+        camera = new THREE.PerspectiveCamera(45, sceneDiv.width() / sceneDiv.height(), 0.1, 10000);
+        camera.position.set(0, 400, 600);
+        camera.lookAt(new THREE.Vector3(0, 0, 0));
+    }
 
-    // scene.add(mesh);//添加到场景中
-    // scene.add(mesh2);//添加到场景中
-    /*
-    光源设置
-    */
-    var point = new THREE.PointLight(0Xffffff);//点光源
-    point.position.set(400, 100, 200)//光源位置
-    scene.add(point)//点光源添加到场景中
-    var ambient = new THREE.AmbientLight(0x444444);//环境光
-    scene.add(ambient);//添加到场景中
+    // 渲染器
+    function initRenderer() {
+        if (Detector.webgl) {
+            renderer = new THREE.WebGLRenderer({antialias: true});
+        } else {
+            renderer = new THREE.CanvasRenderer();
+        }
+        renderer.setSize(sceneDiv.width(), sceneDiv.height());
+        renderer.setClearColor(0x050505);
+        sceneDiv.append(renderer.domElement);
 
-    /*
-    相机设置
-    */
-    //获取高度
-    var height = document.getElementById('scene').clientHeight;
-    //获取宽度
-    var width= document.getElementById('scene').clientWidth;
+    }
 
-    var k = width / height;
-    var s = 150;//三维场景显示范围控制系数，系数越大，显示范围越大
-    var camera = new THREE.OrthographicCamera(-s * k, s * k, s, -s, 1, 1000);
-    camera.position.set(200, 300, 200);//设置相机位置
-    camera.lookAt(scene.position);//设置相机方向
+    // 初始化模型
+    function initContent() {
+        const helper = new THREE.GridHelper(1200, 50, 0xCD3700, 0x4A4A4A);
+        scene.add(helper);
 
-    /*
-    渲染器对象
-    */
-    var renderer = new THREE.WebGLRenderer();
-    renderer.setSize(width, height);
-    renderer.setClearColor(0xb9d3ff, 0.3);//设置背景颜色
-    // document.body.appendChild( renderer.domElement );
+        const cubeGeometry = new THREE.BoxGeometry(100, 100, 100);
+        const cubeMaterial = new THREE.MeshLambertMaterial({color: 0x9370DB});
+        const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+        cube.position.x = 5000;
+        cube.position.y = 50;
+        cube.name = "cube";
+        scene.add(cube);
+        models.push(cube)
 
-    document.getElementById("scene").appendChild(renderer.domElement);
 
-    function render() {
-        renderer.render(scene, camera)
-    }//封装一个渲染函数
+        const sphereGeometry = new THREE.SphereGeometry(50, 50, 50, 50);
+        const sphereMaterial = new THREE.MeshLambertMaterial({color: 0x3CB371});
+        const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+        sphere.position.x = 5000;
+        sphere.position.y = 50;
+        sphere.name = "sphere";
+        scene.add(sphere);
+        models.push(sphere)
 
-    render();//一进来渲染一次
 
-    var controls = new OrbitControls(camera, renderer.domElement);//创建控制对象，把相机作为参数。
-    // controls.maxPolarAngle = (Math.PI / 4) * 3 //控制器垂直方向最大旋转角度（理解为逆时针旋转角度）
-    // controls.minPolarAngle = (Math.PI /180)*3 //控制器垂直方向最大小旋转角度（理解为顺时针旋转角度）
-    controls.addEventListener('change', render);//监听鼠标事件，触发渲染函数。
+        const cylinderGeometry = new THREE.CylinderGeometry(50, 50, 100, 100);
+        const cylinderMaterial = new THREE.MeshLambertMaterial({color: 0xCD7054});
+        const cylinder = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
+        cylinder.position.x = 5000;
+        cylinder.position.y = 50;
+        cylinder.name = "cylinder";
+        scene.add(cylinder);
+        models.push(cylinder)
+
+
+    }
+
+    // 鼠标双击触发的方法
+    function onMouseDblclick(event) {
+
+        // 获取 raycaster 和所有模型相交的数组，其中的元素按照距离排序，越近的越靠前
+        const intersects = getIntersects(event);
+
+        // 获取选中最近的 Mesh 对象
+        if (intersects.length !== 0 && intersects[0].object instanceof THREE.Mesh) {
+            selectObject = intersects[0].object;
+            changeMaterial(selectObject);
+        } else {
+            // alert("未选中 Mesh!");
+        }
+    }
+
+    // 获取与射线相交的对象数组
+    function getIntersects(event) {
+        event.preventDefault();
+        console.log("event.clientX:" + event.clientX)
+        console.log("event.clientY:" + event.clientY)
+
+        // 声明 raycaster 和 mouse 变量
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+
+        // 通过鼠标点击位置,计算出 raycaster 所需点的位置,以屏幕为中心点,范围 -1 到 1
+        mouse.x = (event.clientX / sceneDiv.width()) * 2 - 1;
+        mouse.y = -(event.clientY / sceneDiv.height()) * 2 + 1;
+
+        //通过鼠标点击的位置(二维坐标)和当前相机的矩阵计算出射线位置
+        raycaster.setFromCamera(mouse, camera);
+
+        // 获取与射线相交的对象数组，其中的元素按照距离排序，越近的越靠前
+        const intersects = raycaster.intersectObjects(scene.children);
+
+        //返回选中的对象
+        return intersects;
+    }
+
+    // 窗口变动触发的方法
+    function onWindowResize() {
+        camera.aspect = sceneDiv.width() / sceneDiv.height();
+        camera.updateProjectionMatrix();
+        renderer.setSize(sceneDiv.width(), sceneDiv.height());
+    }
+
+    // 键盘按下触发的方法
+    function onKeyDown(event) {
+        switch (event.keyCode) {
+            case 13:
+                initCamera();
+                initControls();
+                break;
+        }
+    }
+
+    // 改变对象材质属性
+    function changeMaterial(object) {
+
+        const material = new THREE.MeshLambertMaterial({
+            color: 0xffffff * Math.random(),
+            transparent: object.material.transparent ? false : true,
+            opacity: 0.8
+        });
+        object.material = material;
+    }
+
+    // 初始化轨迹球控件
+    function initControls() {
+        controls = new THREE.TrackballControls(camera, renderer.domElement);
+        controls.noRotate = true;
+        controls.noPan = true;
+        // 视角最小距离
+        controls.minDistance = 1000;
+        // 视角最远距离
+        controls.maxDistance = 5000;
+    }
+
+    // 添加拖拽控件
+    function initDragControls() {
+        // 添加平移控件
+        transformControls = new THREE.TransformControls(camera, renderer.domElement);
+
+        scene.add(transformControls);
+
+        // 过滤不是 Mesh 的物体,例如辅助网格
+        const objects = [];
+        for (let i = 0; i < scene.children.length; i++) {
+            if (scene.children[i].isMesh) {
+                objects.push(scene.children[i]);
+            }
+        }
+        // 初始化拖拽控件
+        dragControls = new THREE.DragControls(models, camera, renderer.domElement);
+
+        // 鼠标略过事件
+        dragControls.addEventListener('hoveron', function (event) {
+            // 让变换控件对象和选中的对象绑定
+            transformControls.attach(event.object);
+        });
+        // 开始拖拽
+        dragControls.addEventListener('dragstart', function (event) {
+            controls.enabled = false;
+        });
+        // 拖拽结束
+        dragControls.addEventListener('dragend', function (event) {
+            controls.enabled = true;
+        });
+
+    }
+
+    // 初始化灯光
+    function initLight() {
+        light = new THREE.SpotLight(0xffffff);
+        light.position.set(-300, 600, -400);
+        light.castShadow = true;
+
+        scene.add(light);
+        scene.add(new THREE.AmbientLight(0x5C5C5C));
+    }
+
+    // 初始化 dat.GUI
+    function initGui() {
+
+        // 用来保存我们想要通过dat.gui修改的那些变量
+        var ctrls = {
+            rotationSpeed: 0.02,
+            bouncingSpeed: 0.03,
+            bouncingHeight: 10
+        }
+        //初始化对象，并添加变量的取值范围
+        var gui = new dat.GUI();
+        gui.add(ctrls, 'rotationSpeed', 0, 0.5);
+        gui.add(ctrls, 'bouncingSpeed', 0, 0.5);
+        gui.add(ctrls, 'bouncingHeight', 10, 20);
+        // 属性添加到控件
+
+        scene.add(gui)
+    }
+
+    // 初始化性能插件
+    function initStats() {
+        const stats = new Stats();
+
+        stats.domElement.style.position = 'absolute';
+        stats.domElement.style.left = '5px';
+        stats.domElement.style.top = '5px';
+
+        sceneDiv.append(stats.domElement);
+        return stats;
+    }
+
+    // 更新div的位置
+    function renderDiv(object) {
+        // 获取窗口的一半高度和宽度
+        let halfWidth = sceneDiv.width() / 2;
+        let halfHeight = sceneDiv.height() / 2;
+
+        // 逆转相机求出二维坐标
+        let vector = object.position.clone().project(camera);
+
+        // 修改 div 的位置
+        $("#label").css({
+            left: vector.x * halfWidth + halfWidth,
+            top: -vector.y * halfHeight + halfHeight - object.position.y
+        });
+        // 显示模型信息
+        $("#label").text("name:" + object.name);
+    }
+
+    // 更新控件
+    function update() {
+        stats.update();
+        controls.update();
+        controls.handleResize();
+        transformControls.update();
+        if (model.position != null) {
+            $('#px').val(model.position.x)
+            console.log(model)
+        }
+
+    }
+
+
+    // 初始化
+    function init() {
+        initScene();
+        initCamera();
+        initRenderer();
+        initContent();
+        initLight();
+        initControls();
+        initGui();
+        initDragControls();
+        addEventListener('dblclick', onMouseDblclick, false);
+        addEventListener('resize', onWindowResize, false);
+        addEventListener('keydown', onKeyDown, false);
+
+    }
+
+    function animate() {
+        if (selectObject != undefined && selectObject != null) {
+            renderDiv(selectObject);
+        }
+        requestAnimationFrame(animate);
+        renderer.render(scene, camera);
+        update();
+    }
+
+    init();
+    animate();
+
+    function transformOnClick(i) {
+        if (i === 1) {
+            transformControls.setMode('translate');
+        }
+        if (i === 2) {
+            transformControls.setMode('rotate');
+        }
+        if (i === 3) {
+            transformControls.setMode('scale')
+        }
+    }
+
+    function addModelOnClick(i) {
+        for (let j = 0; j < models.length; j++) {
+            if (i === j) {
+                model = models[j]
+                model.position.x = 0;
+            } else {
+                models[j].position.x = 5000;
+            }
+        }
+    }
+
+    function sendMsg() {
+        const text = $('#pltext').val().trim();
+        if (text != null) {
+            $('#messages').append("<div class=\"message-item outgoing-message\">" +
+                "<div class=\"message-header\">" +
+                user.name
+                + "</div><div class=\"message-content\">" +
+                text
+                + "</div><div class=\"message-action\">" +
+                format(new Date(), 'HH:mm:ss')
+                + "</div></div>");
+            document.getElementById('msg_end').scrollIntoView(false);
+        }
+    }
+
+    /**
+     * 获取年月日 时分秒
+     * @param {string | number} time 时间字符串 | 时间戳
+     * @returns { year, month, date, hours, minutes, seconds }
+     */
+    function getDate (time) {
+        const date = new Date(time)
+        const y = date.getFullYear()
+        const M = date.getMonth() + 1
+        const MM = M > 9 ? M : '0' + M
+        const d = date.getDate()
+        const dd = d > 9 ? d : '0' + d
+        const H = date.getHours()
+        const HH = H > 9 ? H : '0' + H
+        const m = date.getMinutes()
+        const mm = m > 9 ? m : '0' + m
+        const s = date.getSeconds()
+        const ss = s > 9 ? s : '0' + s
+
+        const t = date.toLocaleTimeString()
+        const t_1 = t.substr(0, 2)
+        const t_2 = t.slice(2)
+        const h = t_2.split(':')[0]
+        const hh = h > 9 ? h : '0' + h
+        const a_p = t_1 === '上午' ? 'am' : 'pm'
+
+        return { y, M, MM, d, dd, H, HH, m, mm, s, ss, h, hh, a_p }
+    }
+
+    /**
+     * 格式化时间类型
+     * @param {string | number} time 时间字符串 | 时间戳
+     * @param {string} type 时间格式
+     * @returns 格式化后时间字符串
+     */
+    function format (time, type) {
+        if(time !== null && !time)
+            throw('format error: params 1 time is required')
+        if(new Date(time) == 'Invalid Date')
+            throw('time error: params 1 time is Invalid Date')
+        if(type && typeof type !== 'string')
+            throw('format error: params 2 type not is a string')
+
+        const { y, M, MM, d, dd, H, HH, m, mm, s, ss, h, hh, a_p } = getDate(time)
+
+        switch(type) {
+            case 'yyyy-MM-dd':
+                return [y, MM, dd].join('-')
+            case 'yyyy-M-d':
+                return [y, M, d].join('-')
+            case 'HH:mm:ss':
+                return [HH, mm, ss].join(':')
+            case 'H:m:s':
+                return [H, m, s].join(':')
+            case 'h:m:s':
+                return [h, m, s].join(':') + ' ' + a_p
+            case 'yyyy-MM-dd HH:mm:ss':
+                return [y, MM, dd].join('-') + ' ' + [HH, mm, ss].join(':')
+            case 'yyyy-M-d H:m:s':
+                return [y, M, d].join('-') + ' ' + [H, m, s].join(':')
+            default:
+                return [y, MM, dd].join('-')
+        }
+    }
 </script>
 </body>
 </html>
