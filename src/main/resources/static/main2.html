@@ -111,7 +111,8 @@
 <script src="./js/TransformControls.js"></script>
 <script>
     let sceneDiv = $('#scene')
-    let user =  JSON.parse(sessionStorage.getItem("user"))
+    let user = JSON.parse(sessionStorage.getItem("user"))
+    let msgList = []
     let model = {};
     let models = []
 
@@ -417,25 +418,81 @@
 
     function sendMsg() {
         const text = $('#pltext').val().trim();
-        if (text != null) {
-            $('#messages').append("<div class=\"message-item outgoing-message\">" +
-                "<div class=\"message-header\">" +
-                user.name
-                + "</div><div class=\"message-content\">" +
-                text
-                + "</div><div class=\"message-action\">" +
-                format(new Date(), 'HH:mm:ss')
-                + "</div></div>");
-            document.getElementById('msg_end').scrollIntoView(false);
+        if (text == null) {
+            alert("请输入内容")
         }
+        const date = format(new Date(), 'HH:mm:ss');
+        const data = {}
+        data.text = text;
+        data.date = date
+        data.name = user.name
+        $.ajax({
+            url: '/user/send',
+            data: JSON.stringify(data),
+            contentType: "application/json",
+            type: "POST",
+            success: function (result) {
+                let code = result.code;
+                if (code === 200) {
+                    $('#messages').append("<div class=\"message-item outgoing-message\">" +
+                        "<div class=\"message-header\">" +
+                        user.name
+                        + "</div><div class=\"message-content\">" +
+                        text
+                        + "</div><div class=\"message-action\">" +
+                        format(new Date(), 'HH:mm:ss')
+                        + "</div></div>");
+                    document.getElementById('msg_end').scrollIntoView(false);
+                    return;
+                }
+                alert(result.msg)
+            },
+            error: function (result) {
+                alert("服务器忙，请稍后")
+            }
+        });
     }
 
+    function getMsg(){
+        $.ajax({
+            url: '/user/getMsg',
+            data: {},
+            contentType: "application/json",
+            type: "GET",
+            success: function (result) {
+                let code = result.code;
+                if (code === 200) {
+                    msgList = result.data;
+                    output(msgList)
+                    return;
+                }
+                alert(result.msg)
+            },
+            error: function (result) {
+                alert("服务器忙，请稍后")
+            }
+        });
+    }
+
+    function output(msgList){
+        msgList.forEach(function (msg){
+            $('#messages').append("<div class=\"message-item outgoing-message\">" +
+                "<div class=\"message-header\">" +
+                msg.name
+                + "</div><div class=\"message-content\">" +
+                msg.text
+                + "</div><div class=\"message-action\">" +
+                msg.date
+                + "</div></div>");
+            document.getElementById('msg_end').scrollIntoView(false);
+        })
+    }
     /**
      * 获取年月日 时分秒
      * @param {string | number} time 时间字符串 | 时间戳
      * @returns { year, month, date, hours, minutes, seconds }
      */
-    function getDate (time) {
+    function getDate(time) {
         const date = new Date(time)
         const y = date.getFullYear()
         const M = date.getMonth() + 1
@@ -456,7 +513,7 @@
         const hh = h > 9 ? h : '0' + h
         const a_p = t_1 === '上午' ? 'am' : 'pm'
 
-        return { y, M, MM, d, dd, H, HH, m, mm, s, ss, h, hh, a_p }
+        return {y, M, MM, d, dd, H, HH, m, mm, s, ss, h, hh, a_p}
     }
 
     /**
@@ -465,17 +522,17 @@
      * @param {string} type 时间格式
      * @returns 格式化后时间字符串
      */
-    function format (time, type) {
-        if(time !== null && !time)
+    function format(time, type) {
+        if (time !== null && !time)
             throw('format error: params 1 time is required')
-        if(new Date(time) == 'Invalid Date')
+        if (new Date(time) == 'Invalid Date')
             throw('time error: params 1 time is Invalid Date')
-        if(type && typeof type !== 'string')
+        if (type && typeof type !== 'string')
             throw('format error: params 2 type not is a string')
 
-        const { y, M, MM, d, dd, H, HH, m, mm, s, ss, h, hh, a_p } = getDate(time)
+        const {y, M, MM, d, dd, H, HH, m, mm, s, ss, h, hh, a_p} = getDate(time)
 
-        switch(type) {
+        switch (type) {
             case 'yyyy-MM-dd':
                 return [y, MM, dd].join('-')
             case 'yyyy-M-d':
@@ -494,6 +551,8 @@
                 return [y, MM, dd].join('-')
         }
     }
+
+
 </script>
 </body>
 </html>
