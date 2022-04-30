@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- 必须的 meta 标签 -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap 的 CSS 文件 -->
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <script src="./js/jquery-3.6.0.min.js"></script>
+    <script src="./js/bootstrap.bundle.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <style>
+
+        * {
+            font-size: 12px;
+        }
+
+        img {
+            width: auto;
+            height: 80px;
+        }
+    </style>
+</head>
+<body class="bg-dark" style="color: white;">
+<!--<img style="width: 100%;height: auto" src="./img/平移.png" alt="" >-->
+<!--<img style="width: 100%;height: auto" src="./img/缩放.png" alt="" >-->
+<!--<img style="width: 100%;height: auto" src="./img/旋转x.png" alt="" >-->
+<!--<img style="width: 100%;height: auto" src="./img/旋转y.png" alt="" >-->
+<!--<img style="width: 100%;height: auto" src="./img/旋转z.png" alt="" >-->
+<div class="post">
+    <h3>
+
+        几何变换详解
+
+    </h3>
+    <div>
+        <div>
+            <p>在三维图形学中，几何变换大致分为三种，平移变换（Translation），缩放变换（Scaling），旋转变换（Rotation）。以下讨论皆针对DirectX，所以使用左手坐标系。</p>
+            <h3 id="py">平移变换</h3>
+            <p>将三维空间中的一个点[x, y, z, 1]移动到另外一个点[x', y', z', 1]，三个坐标轴的移动分量分别为dx=Tx, dy=Ty, dz=Tz, 即</p>
+            <p>x' = x + Tx</p>
+            <p>y' = y + Ty</p>
+            <p>z' = z + Tz</p>
+            <p>平移变换的矩阵如下。</p>
+            <p><img src="./img/py.gif" alt=""></p>
+            <h3 id="sf">缩放变换
+
+            </h3>
+            <p>将模型放大或者缩小，本质也是对模型上每个顶点进行放大和缩小（顶点坐标值变大或变小），假设变换前的点是[x, y, z, 1]，变换后的点是[x', y', z', 1]，那么</p>
+            <p>x' = x * Sx</p>
+            <p>y' = y * Sy</p>
+            <p>z' = z * Sz</p>
+            <p>缩放变换的矩阵如下。</p>
+            <p><img src="./img/sf.png" alt=""
+                    class="medium-zoom-image"></p>
+            <h3 id="xz">旋转变换
+
+            </h3>
+            <p>这是三种变换中最复杂的变换，这里只讨论最简单的情况，绕坐标轴旋转，关于绕任意轴旋转，在后续的随笔中介绍。</p>
+            <h4>绕X轴旋转
+            </h4>
+            <p><img src="./img/2012080221200849.jpg" alt=""
+                    class="medium-zoom-image"></p>
+            <p>绕X轴旋转时，顶点的x坐标不发生变化，y坐标和z坐标绕X轴旋转θ度，旋转的正方向为顺时针方向（沿着旋转轴负方向向原点看）。[x, y, z, 1]表示变换前的点，[x', y', z',
+                1]表示变换后的点。变换矩阵如下。</p>
+            <p>关于旋转的正方向，OpenGL与多数图形学书籍规定旋转正方向为逆时针方向（沿着坐标轴负方向向原点看），比如Computer Graphics C Version，p409。</p>
+            <p><img src="./img/2012072522583453.png" alt=""
+                    class="medium-zoom-image"></p>
+            <h4>绕Y轴旋转
+            </h4>
+            <p><img src="./img/2012080221202295.jpg" alt=""
+                    class="medium-zoom-image"></p>
+            <p>绕Y轴旋转时，顶点的y坐标不发生变化，x坐标和z坐标绕Y轴旋转θ度。[x, y, z, 1]表示变换前的点，[x', y', z', 1]表示变换后的点。变换矩阵如下。</p>
+            <p><img src="./img/2012072522584351.png" alt=""
+                    class="medium-zoom-image"></p>
+            <h4>绕Z轴旋转
+            </h4>
+            <p><img src="./img/2012080221203312.jpg" alt=""
+                    class="medium-zoom-image"></p>
+            <p>绕Z轴旋转时，顶点的z坐标不发生变化，x坐标和y坐标绕Z轴旋转θ度。[x, y, z, 1]表示变换前的点，[x', y', z', 1]表示变换后的点。变换矩阵如下。</p>
+            <p><img src="./img/2012072522585375.png" alt=""
+                    class="medium-zoom-image"></p>
+            <!--            <h2>绕坐标轴旋转的矩阵推导-->
+            <!--            </h2>-->
+            <!--            <p>上面三个旋转矩阵是如何得来的呢？我们推导一下，首先看一下二维的情况，再扩展到三维即可。实际上上面三种绕坐标轴旋转的情况属于特殊的二维旋转，比如绕Z轴旋转，相当于在与XOY平面上绕原点做二维旋转。</p>-->
+            <!--            <p>假设点P(x, y)是平面直角坐标系内一点，其到原点的距离为r，其与X轴的夹角为A，现将点P绕原点旋转θ度，得到点P'(x', y')，P'与X轴的夹角为B，则A = B - -->
+            <!--                θ。（注意，在二维坐标中，逆时针旋转时角度为正，顺时针旋转时角度为负，下图中由P旋转到P'，角度为θ，若是由P'转到P，则角度为-θ）。</p>-->
+            <!--            <p><img src="https://pic002.cnblogs.com/images/2012/64257/2012072722272178.png" alt=""-->
+            <!--                    class="medium-zoom-image"></p>-->
+            <!--            <p>&nbsp;</p>-->
+            <!--            <p><img src="//images0.cnblogs.com/blog/64257/201304/02101853-102affb6e65c47e09ac9dcc237bece79.gif" alt="">-->
+            <!--            </p>-->
+            <!--            <p><img src="https://pic002.cnblogs.com/images/2012/64257/2012072723185386.gif" alt=""-->
+            <!--                    class="medium-zoom-image"></p>-->
+            <!--            <p><img src="https://pic002.cnblogs.com/images/2012/64257/2012072723190061.gif" alt=""-->
+            <!--                    class="medium-zoom-image"></p>-->
+            <!--            <p><img src="https://pic002.cnblogs.com/images/2012/64257/2012072723190749.gif" alt=""-->
+            <!--                    class="medium-zoom-image"></p>-->
+            <!--            <p>于是可得下面的转换方程</p>-->
+            <!--            <p><img src="https://pic002.cnblogs.com/images/2012/64257/2012080121492056.gif" alt="">（式一）</p>-->
+            <!--            <p>写成矩阵的形式就是</p>-->
+            <!--            <p><img src="https://pic002.cnblogs.com/images/2012/64257/2012080121544630.gif" alt=""></p>-->
+            <!--            <p>求得旋转矩阵为</p>-->
+            <!--            <p><img src="https://pic002.cnblogs.com/images/2012/64257/2012072723380045.gif" alt=""></p>-->
+            <!--            <p>由于这里使用齐次坐标，所以还需加上一维，最终变成如下形式</p>-->
+            <!--            <h2>绕Z轴旋转矩阵-->
+            <!--                <button class="cnblogs-toc-button" title="显示目录导航" aria-expanded="false"></button>-->
+            <!--            </h2>-->
+            <!--            <p><img src="https://pic002.cnblogs.com/images/2012/64257/2012072723381157.gif" alt=""></p>-->
+            <!--            <p>和前面给出的绕Z轴旋转矩阵完全吻合。</p>-->
+            <!--            <p>对于绕X轴旋转的情况，我们只需将式一中的x用y替换，y用z替换，z用x替换即可。替换后得到</p>-->
+            <!--            <p><img src="https://pic002.cnblogs.com/images/2012/64257/2012080121585214.gif" alt="">(式二)</p>-->
+            <!--            <p>对应的旋转矩阵为</p>-->
+            <!--            <h2>绕X轴旋转矩阵-->
+            <!--                <button class="cnblogs-toc-button" title="显示目录导航" aria-expanded="false"></button>-->
+            <!--            </h2>-->
+            <!--            <p><img src="https://pic002.cnblogs.com/images/2012/64257/2012080122093513.gif" alt=""></p>-->
+            <!--            <p>对于绕Y轴旋转的情况，只需对式二做一次同样的替换即可，的到的变换方程为</p>-->
+            <!--            <p><img src="https://pic002.cnblogs.com/images/2012/64257/2012080122035956.gif" alt=""></p>-->
+            <!--            <p>对应的变换矩阵为</p>-->
+            <!--            <h2>绕Y轴旋转矩阵-->
+            <!--                <button class="cnblogs-toc-button" title="显示目录导航" aria-expanded="false"></button>-->
+            <!--            </h2>-->
+            <!--            <p><img src="https://pic002.cnblogs.com/images/2012/64257/2012080122095076.gif" alt=""></p>-->
+            <!--            <h1>逆矩阵-->
+            <!--                <button class="cnblogs-toc-button" title="显示目录导航" aria-expanded="false"></button>-->
+            <!--            </h1>-->
+            <!--            <p>平移变换矩阵的逆矩阵与原来的平移量相同，但是方向相反。</p>-->
+            <!--            <p><img src="//images0.cnblogs.com/blog/64257/201305/04212622-7111fbe779d947378de404b9f0c2b8e4.gif" alt=""-->
+            <!--                    class="medium-zoom-image"></p>-->
+            <!--            <p>旋转变换矩阵的逆矩阵与原来的旋转轴相同但是角度相反。</p>-->
+            <!--            <p><img src="//images0.cnblogs.com/blog/64257/201305/04213819-e14c9f6261fd410e87968fe72dcd2b81.gif" alt=""-->
+            <!--                    class="medium-zoom-image"></p>-->
+            <!--            <p><img src="//images0.cnblogs.com/blog/64257/201305/04213830-72314a480ca045bbae128a2bbb98c38d.gif" alt=""-->
+            <!--                    class="medium-zoom-image"></p>-->
+            <!--            <p><img src="//images0.cnblogs.com/blog/64257/201305/04213842-de956353b48243879eb3a9e3861887ce.gif" alt=""-->
+            <!--                    class="medium-zoom-image"></p>-->
+            <!--            <p>缩放变换的逆矩阵正好和原来的效果相反，如果原来是放大，则逆矩阵是缩小，如果原来是缩小，则逆矩阵是放大。</p>-->
+            <!--            <p><img src="//images0.cnblogs.com/blog/64257/201305/04212639-f299dd6356804b14bac5a40c47c7ab85.gif" alt="">-->
+            <!--            </p>-->
+        </div>
+
+        <div class="clear"></div>
+
+    </div>
+
+</div>
+</body>
+</html>

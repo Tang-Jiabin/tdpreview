@@ -15,6 +15,7 @@
             height: 100%;
             padding: 0;
             margin: 0;
+
         }
 
         .chat-body::-webkit-scrollbar {
@@ -30,7 +31,7 @@
 <body style="z-index: 0">
 <div class="container-fluid" style="height: 100%">
     <div class="row" style="height: 100%">
-        <div id="scene" class="col-9"
+        <div id="scene" class="col-10"
              style="height: 100%;background-color: #0091d2;z-index: 5;position: relative;padding: 0;margin: 0;">
 
             <!--            <div class="float-right"-->
@@ -41,53 +42,104 @@
             <!--                    <li>z轴</li>-->
             <!--                </ul>-->
             <!--            </div>-->
-            <div style="position: absolute;bottom:0;height: 10%;width: 100%;z-index: 10;background-color: #6e707a;padding: 0;margin: 0;">
+            <div class="bg-dark"
+                 style="position: absolute;bottom:0;width: 100%;z-index: 10;padding: 2px;margin: 0;max-height: 20%">
                 <div class="row">
-                    <div class="col-4">
+
+                    <div class="col-3 d-none d-sm-block d-md-block d-xl-none d-lg-none">
                         <!--选择三维物体区域-->
-                        <button class="btn btn-success" onclick="addModelOnClick(0)">立方体</button>
-                        <button class="btn btn-success" onclick="addModelOnClick(1)">圆</button>
-                        <button class="btn btn-success" onclick="addModelOnClick(2)">圆柱体</button>
+                        <button style="margin: 2px 1px;" class="btn btn-success btn-sm" onclick="addModelOnClick(0)">
+                            立方体
+                        </button>
+                        <button style="margin: 2px 1px;" class="btn btn-success btn-sm" onclick="addModelOnClick(1)">圆
+                        </button>
+                        <button style="margin: 2px 1px;" class="btn btn-success btn-sm" onclick="addModelOnClick(2)">
+                            圆柱体
+                        </button>
+                        <br>
+                        <button style="margin: 2px 1px;" class="btn btn-info btn-sm" onclick="transformOnClick(1)">平移
+                        </button>
+                        <button style="margin: 2px 1px;" class="btn btn-info btn-sm" onclick="transformOnClick(2)">旋转
+                        </button>
+                        <button style="margin: 2px 1px;" class="btn btn-info btn-sm" onclick="transformOnClick(3)">缩放
+                        </button>
+                        <button style="margin: 2px 1px;" class="btn btn-warning btn-sm"
+                                onclick="document.location.reload();">重置
+                        </button>
                     </div>
-                    <div class="col-4">
-                        <!--操作区域-->
-                        <button class="btn btn-success" onclick="transformOnClick(1)">平移</button>
-                        <button class="btn btn-success" onclick="transformOnClick(2)">旋转</button>
-                        <button class="btn btn-success" onclick="transformOnClick(3)">缩放</button>
+                    <!--                    <div class="col-3 d-none d-sm-block d-md-block d-xl-none d-lg-none">-->
+                    <!--                        &lt;!&ndash;操作区域&ndash;&gt;-->
+                    <!--                        <button style="margin: 2px 1px;" class="btn btn-info btn-sm" onclick="transformOnClick(1)">平移</button>-->
+                    <!--                        <button style="margin: 2px 1px;" class="btn btn-info btn-sm" onclick="transformOnClick(2)">旋转</button>-->
+                    <!--                        <button style="margin: 2px 1px;" class="btn btn-info btn-sm" onclick="transformOnClick(3)">缩放</button>-->
+                    <!--                        <button style="margin: 2px 1px;" class="btn btn-warning btn-sm" onclick="document.location.reload();">重置</button>-->
+                    <!--                    </div>-->
+                    <div class="col-3 d-block d-sm-none d-md-none d-lg-block d-xl-block">
+                        <!--选择三维物体区域-->
+                        <button style="margin: 2px 1px;" class="btn btn-success " onclick="addModelOnClick(0)">立方体
+                        </button>
+                        <button style="margin: 2px 1px;" class="btn btn-success " onclick="addModelOnClick(1)">圆
+                        </button>
+                        <button style="margin: 2px 1px;" class="btn btn-success " onclick="addModelOnClick(2)">圆柱体
+                        </button>
+                        <br>
+                        <button style="margin: 2px 1px;" class="btn btn-info " onclick="transformOnClick(1)">平移</button>
+                        <button style="margin: 2px 1px;" class="btn btn-info " onclick="transformOnClick(2)">旋转</button>
+                        <button style="margin: 2px 1px;" class="btn btn-info " onclick="transformOnClick(3)">缩放</button>
+                        <button style="margin: 2px 1px;" class="btn btn-warning " onclick="document.location.reload();">
+                            重置
+                        </button>
                     </div>
-                    <div class="col-4">
-                        <ul class="list-group">
-                            <li class="list-group-item"><label id="px"></label></li>
-                            <li class="list-group-item">A third item</li>
-                            <li class="list-group-item">A fourth item</li>
+                    <!--                    <div class="col-3 d-block d-sm-none d-md-none d-lg-block d-xl-block">-->
+                    <!--                        &lt;!&ndash;操作区域&ndash;&gt;-->
+                    <!--                        <button style="margin: 2px 1px;" class="btn btn-info " onclick="transformOnClick(1)">平移</button>-->
+                    <!--                        <button style="margin: 2px 1px;" class="btn btn-info " onclick="transformOnClick(2)">旋转</button>-->
+                    <!--                        <button style="margin: 2px 1px;" class="btn btn-info " onclick="transformOnClick(3)">缩放</button>-->
+                    <!--                        <button style="margin: 2px 1px;" class="btn btn-warning " onclick="document.location.reload();">重置</button>-->
+                    <!--                    </div>-->
+                    <div class="col-3">
+                        <ul class="list-group" style="color: white">
+                            <li class="list-group-item">位置：X:
+                                <span style="margin: 0 10px 0 0" id="px"></span> Y:
+                                <span style="margin: 0 10px 0 0" id="py"></span> Z:
+                                <span style="margin: 0 10px 0 0" id="pz"></span>
+                            </li>
+                            <li class="list-group-item">旋转：X:<span style="margin: 0 10px 0 0" id="rx"></span> Y:<span
+                                    style="margin: 0 10px 0 0" id="ry"></span> Z:<span style="margin: 0 10px 0 0"
+                                                                                       id="rz"></span></li>
+                            <li class="list-group-item">缩放：X:<span style="margin: 0 10px 0 0" id="sx"></span> Y:<span
+                                    style="margin: 0 10px 0 0" id="sy"></span> Z:<span style="margin: 0 10px 0 0"
+                                                                                       id="sz"></span></li>
                         </ul>
                     </div>
 
+                    <div class="col-6">
+                        <div style="float:right;position:absolute;right:10px;padding: 0;margin: 0 ">
+                            <button class="btn btn-info" onclick="window.open('img.html')">在新窗口打开</button>
+                        </div>
+                        <iframe id="iframe" frameborder="0" src="img.html" width="100%"></iframe>
+                    </div>
                 </div>
-
             </div>
         </div>
-        <div class="col-3" style="height: 100%;background-color: #b3d7ff;z-index: 5">
+        <div class="col-2 bg-light" style="height: 100%;background-color: #b3d7ff;z-index: 5">
             <div class="layout">
                 <div class="content ">
                     <div class="chat">
                         <div class="chat-body" style="outline: none;overflow-y:auto">
                             <div id="messages" class="messages">
-                                <div class="message-item ">
-                                    <div class="message-header">name</div>
-                                    <div class="message-content">Lorem ipsum dolor sit amet.</div>
-                                    <div class="message-action">PM 14:25</div>
-                                </div>
+
                             </div>
                             <span id="msg_end" style="overflow:hidden"></span>
                         </div>
                         <div class="chat-footer">
                             <div class="input-group">
-                                <textarea id="pltext" type="text" class="form-control" placeholder=""
-                                          aria-label=""
-                                          aria-describedby="button-addon4"></textarea>
+                                <input id="pltext" type="text" class="form-control" placeholder=""
+                                       aria-label=""
+                                       aria-describedby="button-addon4">
                                 <div class="input-group-append" id="button-addon4">
-                                    <button class="btn btn-outline-secondary" type="button" onclick="sendMsg()">评论
+                                    <button class="btn btn-outline-secondary btn-success" style="color: white"
+                                            onclick="sendMsg()">发送
                                     </button>
                                 </div>
                             </div>
@@ -115,9 +167,14 @@
     let msgList = []
     let model = {};
     let models = []
+    let tr = false
+    let ro = false
+    let sc = false
 
     const stats = initStats();
     let scene, camera, renderer, controls, light, selectObject, transformControls, dragControls;
+
+    setInterval(getMsg, 3000)
 
     // 场景
     function initScene() {
@@ -150,7 +207,7 @@
         scene.add(helper);
 
         const cubeGeometry = new THREE.BoxGeometry(100, 100, 100);
-        const cubeMaterial = new THREE.MeshLambertMaterial({color: 0x9370DB});
+        const cubeMaterial = new THREE.MeshPhongMaterial({color: 0X808080, transparent: false});
         const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
         cube.position.x = 5000;
         cube.position.y = 50;
@@ -160,7 +217,7 @@
 
 
         const sphereGeometry = new THREE.SphereGeometry(50, 50, 50, 50);
-        const sphereMaterial = new THREE.MeshLambertMaterial({color: 0x3CB371});
+        const sphereMaterial = new THREE.MeshPhongMaterial({color: 0X808080, transparent: false});
         const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
         sphere.position.x = 5000;
         sphere.position.y = 50;
@@ -170,7 +227,7 @@
 
 
         const cylinderGeometry = new THREE.CylinderGeometry(50, 50, 100, 100);
-        const cylinderMaterial = new THREE.MeshLambertMaterial({color: 0xCD7054});
+        const cylinderMaterial = new THREE.MeshPhongMaterial({color: 0X808080, transparent: false});
         const cylinder = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
         cylinder.position.x = 5000;
         cylinder.position.y = 50;
@@ -241,9 +298,8 @@
     function changeMaterial(object) {
 
         const material = new THREE.MeshLambertMaterial({
-            color: 0xffffff * Math.random(),
-            transparent: object.material.transparent ? false : true,
-            opacity: 0.8
+            color: 0xffffff * Math.random()
+
         });
         object.material = material;
     }
@@ -297,9 +353,8 @@
         light = new THREE.SpotLight(0xffffff);
         light.position.set(-300, 600, -400);
         light.castShadow = true;
-
         scene.add(light);
-        scene.add(new THREE.AmbientLight(0x5C5C5C));
+        scene.add(new THREE.AmbientLight(0xffffff));
     }
 
     // 初始化 dat.GUI
@@ -357,11 +412,36 @@
         controls.update();
         controls.handleResize();
         transformControls.update();
-        if (model.position != null) {
-            $('#px').val(model.position.x)
-            console.log(model)
-        }
 
+        updateModeInfo()
+
+    }
+
+    function updateModeInfo() {
+        if (model.position != null) {
+            let px = model.position.x.toFixed(4)
+            let py = model.position.y.toFixed(4)
+            let pz = model.position.z.toFixed(5)
+            $('#px').html(px)
+            $('#py').html(py)
+            $('#pz').html(pz)
+        }
+        if (model.rotation != null) {
+            let rx = model.rotation.x.toFixed(4)
+            let ry = model.rotation.y.toFixed(4)
+            let rz = model.rotation.z.toFixed(4)
+            $('#rx').html(rx)
+            $('#ry').html(ry)
+            $('#rz').html(rz)
+        }
+        if (model.scale != null) {
+            let sx = model.scale.x.toFixed(4)
+            let sy = model.scale.y.toFixed(4)
+            let sz = model.scale.z.toFixed(4)
+            $('#sx').html(sx)
+            $('#sy').html(sy)
+            $('#sz').html(sz)
+        }
     }
 
 
@@ -385,6 +465,24 @@
         if (selectObject != undefined && selectObject != null) {
             renderDiv(selectObject);
         }
+        if (tr) {
+            if (model.position !== undefined && model.position !== null) {
+                model.position.x += 1
+            }
+        }
+        if (ro) {
+            if (model.rotation !== undefined && model.rotation !== null) {
+                model.rotation.x += 0.01
+            }
+        }
+        if (sc) {
+            if (model.scale !== undefined && model.scale !== null) {
+                model.scale.x += 0.001
+                model.scale.y += 0.001
+                model.scale.z += 0.001
+            }
+        }
+
         requestAnimationFrame(animate);
         renderer.render(scene, camera);
         update();
@@ -393,16 +491,31 @@
     init();
     animate();
 
+    function stop(){
+        tr = false;
+        ro = false;
+        sc = false;
+
+    }
+
     function transformOnClick(i) {
         if (i === 1) {
             transformControls.setMode('translate');
+            $('#iframe').attr('src', 'img.html#py')
+            tr = true
+
         }
         if (i === 2) {
             transformControls.setMode('rotate');
+            $('#iframe').attr('src', 'img.html#xz')
+            ro = true
         }
         if (i === 3) {
             transformControls.setMode('scale')
+            $('#iframe').attr('src', 'img.html#sf')
+            sc = true
         }
+        setTimeout(stop,1000)
     }
 
     function addModelOnClick(i) {
@@ -423,6 +536,7 @@
         }
         const date = format(new Date(), 'HH:mm:ss');
         const data = {}
+        data.uid = user.id
         data.text = text;
         data.date = date
         data.name = user.name
@@ -453,7 +567,7 @@
         });
     }
 
-    function getMsg(){
+    function getMsg() {
         $.ajax({
             url: '/user/getMsg',
             data: {},
@@ -466,17 +580,23 @@
                     output(msgList)
                     return;
                 }
-                alert(result.msg)
+                // alert(result.msg)
             },
             error: function (result) {
-                alert("服务器忙，请稍后")
+                // alert("服务器忙，请稍后")
             }
         });
     }
 
-    function output(msgList){
-        msgList.forEach(function (msg){
-            $('#messages').append("<div class=\"message-item outgoing-message\">" +
+    function output(msgList) {
+        $('#messages').html('');
+        msgList.forEach(function (msg) {
+            let isme = '';
+            if (msg.uid === user.id) {
+                isme = 'outgoing-message'
+            }
+
+            $('#messages').append("<div class=\"message-item " + isme + "\">" +
                 "<div class=\"message-header\">" +
                 msg.name
                 + "</div><div class=\"message-content\">" +
@@ -487,6 +607,7 @@
             document.getElementById('msg_end').scrollIntoView(false);
         })
     }
+
     /**
      * 获取年月日 时分秒
      * @param {string | number} time 时间字符串 | 时间戳

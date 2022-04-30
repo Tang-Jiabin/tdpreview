@@ -15,7 +15,7 @@
     <title>登录</title>
 </head>
 
-<body style=" background: url(http://global.bing.com/az/hprichbg/rb/RavenWolf_EN-US4423795745_1920x1080.jpg) no-repeat center center fixed; background-size: 100%;">
+<body style=" background: url(./img/bg.png) no-repeat center center fixed; background-size: 100%;">
 
 
 <div class="modal-dialog" style="margin-top: 10%;">
@@ -177,7 +177,7 @@
                 let code = result.code;
                 if (code === 200) {
                     sessionStorage.setItem("user", JSON.stringify(result.data))
-                    location.href = "main.html";
+                    location.href = "main2.html";
                     return;
                 }
                 alert(result.msg)

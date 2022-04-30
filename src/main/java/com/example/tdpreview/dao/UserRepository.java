@@ -14,4 +14,5 @@ public interface UserRepository extends JpaRepository<User,Integer> {
 
     Optional<User> findByNameAndPwdOrNoAndPwd(String name, String pwd, String name1, String pwd1);
 
+    Optional<User> findByNo(String no);
 }

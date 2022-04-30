@@ -12,7 +12,7 @@ spring:
       connection-test-query: SELECT 1
     name: mysql
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://49.233.127.220:3306/3DPreview?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&autoReconnect=true
+    url: jdbc:mysql://127.0.0.1:3306/3DPreview?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&autoReconnect=true
     username: root
     password: Mysql@Test01
   jpa:
